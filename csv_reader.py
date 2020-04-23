@@ -18,3 +18,5 @@ with open(filepath, mode='r') as dataset:
         line_count += 1
     
     print("Images detected in dataset: "+ str(line_count))
+
+print("test submission")
