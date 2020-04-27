@@ -52,3 +52,11 @@ model.fit(x, y,
           epochs=2,
           validation_split = 0.2)
 prediction = model.predict(x_test)
+final_pred = prediction.argmax(axis = 1)
+submission = np.zeros((28000,2))
+submission[:,1]=final_pred
+for i in range(28000):
+    submission[i,0]= i+1
+submission = submission.astype(int)
+pd.DataFrame(submission,columns=["ImageId","Label"]).to_csv("submission.csv",index = False)
+    
