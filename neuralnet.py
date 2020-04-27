@@ -18,11 +18,20 @@ def data_prep(raw):
     out_x = x_shaped_array / 255
     return out_x, out_y
 
-train_file = "dataset/dataset_sample.csv"
+def test_data_prep(raw):
+    num_images = raw.shape[0]
+    x_as_array = raw.values[:,:]
+    x_shaped_array = x_as_array.reshape(num_images, img_rows, img_cols, 1)
+    test_x = x_shaped_array / 255
+    return test_x
+    
+
+train_file = "dataset/train.csv"
 raw_data = np.loadtxt(train_file, skiprows=1, delimiter=',')
-
-
+test_file = "dataset/test.csv"
+test_data = pd.read_csv(test_file)
 raw_data = pd.read_csv(train_file)
+x_test = test_data_prep(test_data)
 
 x, y = data_prep(raw_data)
 
@@ -42,3 +51,4 @@ model.fit(x, y,
           batch_size=128,
           epochs=2,
           validation_split = 0.2)
+prediction = model.predict(x_test)
