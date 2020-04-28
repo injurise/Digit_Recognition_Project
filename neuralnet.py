@@ -4,12 +4,21 @@
 # Also changed epochs (they were at 2). Might mean closer fit to the data.Too many might lead to overfitting
 # I now try to add droput layers to prevent overfitting and use it to be able to increase the n of epochs. Works pretty well
 
+# I made the model very deep right now, just to try it. What is kind of funny and interesting:
+# In order to do this I had to decrease the Kernel size otherwise it wouldn't let me add more layers
+# I think the reason for this is that each conv and pooling layer decreases the dimensions and if the image file
+# is quite small (pixel size) you might have reduced it to the limit. (Just a guess though)
+
+#Network also works perfectly fine if you just use the first 2 "layer-sets"
+#You can then increase the Kernel size to 3,3 again. My accuracy for that was 0.987 which seemed decent
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, Dropout,MaxPooling2D
+
 
 
 img_rows, img_cols = 28, 28
@@ -45,17 +54,26 @@ model = Sequential()
 model.add(Conv2D(20, kernel_size=(3, 3),
                  activation='relu',
                  input_shape=(img_rows, img_cols, 1)))
-model.add(Conv2D(20, kernel_size=(3, 3), activation='relu'))
-model.add(Conv2D(20, kernel_size=(3, 3), activation='relu'))
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2),strides = 2))
 model.add(Dropout(0.5))
 
-model.add(Conv2D(20, kernel_size=(3, 3), activation='relu'))
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2),strides = 2))
 model.add(Dropout(0.25))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
 
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
+model.add(Conv2D(20, kernel_size=(2, 2), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2),strides = 2))
+model.add(Dropout(0.25))
+
+model.add(Flatten())
+
+model.add(Dense(128, activation='relu'))
+model.add(Dense(128, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer='adam',
