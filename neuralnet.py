@@ -1,9 +1,15 @@
+#note I have made the validation set very small. I think that means it trains on more examples but 
+# we get a less accurate accuracy estimate. However, this might be better to score higher scores on kaggel. 
+# I am not sure about this however. 
+# Also changed epochs (they were at 2). Might mean closer fit to the data.Too many might lead to overfitting
+# I now try to add droput layers to prevent overfitting and use it to be able to increase the n of epochs. Works pretty well
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, Dropout
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, Dropout,MaxPooling2D
 
 
 img_rows, img_cols = 28, 28
@@ -40,17 +46,27 @@ model.add(Conv2D(20, kernel_size=(3, 3),
                  activation='relu',
                  input_shape=(img_rows, img_cols, 1)))
 model.add(Conv2D(20, kernel_size=(3, 3), activation='relu'))
+model.add(Conv2D(20, kernel_size=(3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2),strides = 2))
+model.add(Dropout(0.5))
+
+model.add(Conv2D(20, kernel_size=(3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2),strides = 2))
+model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
-model.add(Dense(num_classes, activation='softmax'))
 
+model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer='adam',
               metrics=['accuracy'])
+
+
+
 model.fit(x, y,
           batch_size=128,
-          epochs=2,
-          validation_split = 0.2)
+          epochs=6,
+          validation_split = 0.1)
 prediction = model.predict(x_test)
 final_pred = prediction.argmax(axis = 1)
 submission = np.zeros((28000,2))
