@@ -8,6 +8,7 @@
 # In order to do this I had to decrease the Kernel size otherwise it wouldn't let me add more layers
 # I think the reason for this is that each conv and pooling layer decreases the dimensions and if the image file
 # is quite small (pixel size) you might have reduced it to the limit. (Just a guess though)
+#or maybe they don't converge like this, as in the article I send you
 
 #Network also works perfectly fine if you just use the first 2 "layer-sets"
 #You can then increase the Kernel size to 3,3 again. My accuracy for that was 0.987 which seemed decent
